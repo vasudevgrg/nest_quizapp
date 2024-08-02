@@ -17,8 +17,10 @@ export class Question {
   statement: string;
   @Column()
   name: string;
+
   @ManyToMany(() => Exam, (e) => e.questions)
   exams: Exam[];
+
   @OneToMany(() => Option, (e) => e.question)
   @JoinColumn()
   options: Option[];

@@ -6,12 +6,12 @@ import { User } from 'src/domain/user/user.entity';
 export class UserService {
   userRepository = dataSource.getRepository(User);
 
-  async createUser(user: User) {
+  async createUser(user: User): Promise<User> {
     const new_user = await this.userRepository.save(user);
     return new_user;
   }
 
-  async getusers() {
+  async getusers(): Promise<Array<User>> {
     const users = await this.userRepository.find();
     return users;
   }
