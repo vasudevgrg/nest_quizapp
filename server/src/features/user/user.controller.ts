@@ -4,6 +4,9 @@ import { Response } from 'express';
 import { LoginDto, UserDto } from './dto/create-user.dto';
 import { dataSource } from 'ormconfig';
 import { User } from 'src/domain/user/user.entity';
+import * as jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Controller('user')
 export class UserController {
@@ -26,14 +29,17 @@ export class UserController {
     const { email, password } = body;
 
     const user = await this.userservice.login({ email, password });
-    
+
     if (user) {
       console.log(user);
+      const token = jwt.sign({ role: user.role }, process.env.JWT_SECRET_KEY);
+      res.cookie('jwt', token, {
+        secure: false,
+      });
       res.cookie('user_id', user.id, {
         secure: false,
       });
       return res.send(true);
-
     } else {
       return res.send(false);
     }
