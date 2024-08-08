@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from '../question/question.entity';
 
 @Entity('option')
@@ -9,6 +9,6 @@ export class Option {
   @Column()
   option: string;
 
-  @OneToOne(() => Question, (e) => e.options)
+  @ManyToOne(() => Question, (e) => e.options)
   question: Question;
 }

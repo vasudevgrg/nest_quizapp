@@ -18,3 +18,8 @@ export class UserDto {
   role: string;
   exams: Array<ExamDto>;
 }
+
+export class LoginDto {
+  email: string;
+  password: string;
+}

@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -13,10 +14,16 @@ import { Question } from '../question/question.entity';
 export class Exam {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   name: string;
-  @ManyToOne(() => User, (e) => e.exams)
+
+  @ManyToOne(() => User, (user) => user.exams)
   user: User;
+
+  @ManyToMany(()=> User, (user)=> user.studentExams)
+  students: User[]
+
   @ManyToMany(() => Question, (e) => e.exams)
   @JoinTable()
   questions: Question[];
