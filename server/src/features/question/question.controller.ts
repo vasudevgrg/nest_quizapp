@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { questionService as QuestionService } from './question.service';
-import { createQuestionDto } from './dto/question.dto';
+import { createQuestionDto, examRelationDto } from './dto/question.dto';
 
 @Controller('question')
 export class questionControler {
@@ -9,7 +9,6 @@ export class questionControler {
   @Post('createquestion')
   async createQuestion(@Body() body : createQuestionDto) {
     const { name, statement, exam_id, options , correct_option}= body;
-    console.log(name + " inside "+ statement);
     const question = await this.questionService.createQuestion({
       name,
       statement,
@@ -18,5 +17,19 @@ export class questionControler {
       correct_option
     });
     return question;
+  };
+
+  @Post('searchquestions')
+  async searchQuestions (@Body() body: {question_name: string}) {
+    const {question_name} = body;
+    const questions= await this.questionService.searchQuestions({name: question_name});
+    return questions;
+  }
+
+  @Post('examrelation')
+  async examRelation (@Body() body: examRelationDto ) {
+    const {question_id, exam_id} = body;
+    const result= await this.questionService.searchRelation({question_id, exam_id});
+    return result;
   }
 }

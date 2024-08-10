@@ -22,5 +22,6 @@ export class StudentQuestion {
   student_exam_id: number;
 
   @OneToOne(()=> Option)
+  @JoinColumn()
   option : Option
 }

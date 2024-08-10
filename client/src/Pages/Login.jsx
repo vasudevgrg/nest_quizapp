@@ -17,13 +17,19 @@ const Login = () => {
         'Content-Type':'application/json'
     },
     credentials:'include'
-   }).then(e=>e.json()).then(e=> {console.log(e);
+   }).then(async e=>{
+    if(!e.ok){
+        const response= await e.json();
+        throw new Error(response);
+    }
+    return e.json();
+   }).then(e=> {console.log(e);
     if(e){
         navigate('/');
     }else{
         navigate('/login');
     }
-   });
+   }).catch((error)=> console.log(error));
 };
 
   return (

@@ -7,7 +7,7 @@ const persistConfig = {
     key: 'root',
     storage,
     // Specify the reducers you want to persist
-    whitelist: ['manageExamdata'],
+    whitelist: ['manageExamdata','manageStudentExamId','manageExamAnalysis'],
   };
   const persistedReducer = persistReducer(persistConfig, rootreducer);
    const store = createStore(persistedReducer);

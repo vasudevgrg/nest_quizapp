@@ -14,12 +14,13 @@ export const dataSourceOptions = (
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_DATABASE'),
   entities: ['dist/src/domain/**/*.js'],
-  synchronize: false,
+  synchronize: true,
   migrationsTableName: 'migrations',
   migrations: ['dist/src/infrastructure/database/migrations/*.js'],
   seeds: ['dist/src/infrastructure/database/seeders/*.js'],
   seedTracking: true,
 });
+
 
 export const dataSource = new DataSource(
   dataSourceOptions(new ConfigService()),

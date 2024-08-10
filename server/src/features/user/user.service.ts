@@ -28,9 +28,7 @@ export class UserService {
       if(!user){
         throw new UnauthorizedException('Invalid credentials');
       }
-
-console.log(user.password);
-console.log(password);
+      
       if((String)(user.password)=== (String)(password)) {
         console.log("inside verified");
         return user;

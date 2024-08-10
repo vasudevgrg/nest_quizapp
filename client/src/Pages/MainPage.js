@@ -1,60 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import CreateQuestions from './CreateQuestions';
 import ExamCard from '../Components/ExamCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { examId, showCreateQuestionModal, showPopup } from '../action';
+import CreateQuestion from '../Components/Modal/CreateQuestionModal';
+import CreateExam from '../Components/CreateExam';
+import Cookies from 'js-cookie';
 
 const MainPage = () => {
-    const [name, setName]= useState("");
-    const navigate= useNavigate();
-    const [showCreateQuestion, setShowCreateQuestion]= useState(false);
-    const [examId, setExamId]= useState(0);
+    const [isAdmin, setIsAdmin]= useState(false);
     const [exams, setExams]= useState([]);
+    const showModal = useSelector(e=> e.manageShowCreateQuestionModal);
+    const dispatch= useDispatch();
 
-    useEffect(()=> {
-        fetch("http://localhost:5002/exam/getexams",{
-            credentials:'include'
-        }).then(e=>e.json()).then(e=>{
-            console.log(e);
-            setExams(e);
+    useEffect(() => {
+        fetch("http://localhost:5002/exam/getexams", {
+          credentials: 'include'
         })
-    },[]);
-
-    const handleCreateExam = ()=> {
-        fetch("http://localhost:5002/exam/createexam",{
-            method:'POST',
-            body: JSON.stringify({
-                name
-            }),
-            headers : {
-                "Content-Type": "application/json"
-            },
-            credentials:'include'
-        }).then(e=>e.json()).then(e=>{
-            console.log(e.exam.id);
-            setExamId(e.exam.id);
-            setShowCreateQuestion(true);
-        })
-    }
+          .then(async (response) => {
+            if (!response.ok) {
+              const errorResponse = await response.json();
+              throw new Error(errorResponse.message || "Failed to fetch exams");
+            }
+            return response.json(); 
+          })
+          .then((data) => {
+            console.log(data); 
+            setExams(data); 
+          })
+          .catch((error) => {
+            dispatch(showPopup({ visible: 'true', message: error.message })); 
+          });
+        const role = Cookies.get('role');
+        if (role === 'admin') {
+          setIsAdmin(true);
+        }
+      }, [dispatch]); 
+      
 
   return (
    <>
    <h1>
     Welcome to Quiz Webssite
    </h1>
-   <div>
-    <label>
-        Create New Exam:
-        <input value={name} onChange={e=> setName(e.target.value)}/>
-    </label>
-    <button onClick={handleCreateExam}> Create Exam</button>
-   </div>
-   {
-    showCreateQuestion && <CreateQuestions exam_id={examId}/>
-   }
+  {
+   isAdmin && <CreateExam/>
+  }
    {
     exams.map(e=> (
         <ExamCard data={e}/>
     ))
+   }
+   {
+    showModal && <CreateQuestion/>
    }
    </>
   )

@@ -32,10 +32,10 @@ export class User {
   exams: Exam[];
 
   @ManyToMany(() => Exam, (exam) => exam.students)
-  @JoinTable({name:'StudentExam'})
+  @JoinTable({ name: 'StudentExam' })
   studentExams: Exam[];
 
-  @ManyToMany(()=> Question , (question)=> question.students)
-  @JoinTable({name : 'StudentQuestion'})
-  questions: Question[]
+  @ManyToMany(() => Question, (question) => question.students)
+  @JoinTable({ name: 'StudentQuestion' })
+  questions: Question[];
 }

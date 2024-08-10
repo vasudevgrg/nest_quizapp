@@ -10,9 +10,7 @@ import { questionService } from '../question/question.service';
 
 @Controller('exam')
 export class ExamController {
-  constructor(
-    private readonly examService: examService
-  ) {}
+  constructor(private readonly examService: examService) {}
   @Post('createexam')
   async createExam(@Req() req: Request, @Body() body: { name: string }) {
     const { name } = body;
@@ -27,7 +25,7 @@ export class ExamController {
     const user_id = req.cookies['user_id'];
 
     const exams = await this.examService.getExams(user_id);
-
+    console.log(exams);
     return exams;
   }
 
@@ -35,11 +33,8 @@ export class ExamController {
   async getQuestions(
     @Param('exam_id') exam_id: number,
   ): Promise<returnCreateQuestionDto[]> {
-    const questions = await dataSource
-      .createQueryBuilder()
-      .relation(Exam, 'questions')
-      .of(exam_id)
-      .loadMany();
+    const questions = await this.examService.getQuestions({ exam_id });
+    console.log(questions);
     return questions;
   }
 
@@ -47,7 +42,7 @@ export class ExamController {
   async attemptExam(
     @Param('exam_id') exam_id: number,
     @Req() req: Request,
-  ): Promise<boolean> {
+  ): Promise<number> {
     const val = await this.examService.attemptExam({
       exam_id: exam_id,
       user_id: req.cookies['user_id'],
@@ -56,7 +51,11 @@ export class ExamController {
   }
 
   @Post('submitexam/:student_exam_id')
-  async submitExam(@Req() req: Request,@Body() body : SubmitExamDto, @Param('student_exam_id') student_exam_id: number) {
+  async submitExam(
+    @Req() req: Request,
+    @Body() body: SubmitExamDto,
+    @Param('student_exam_id') student_exam_id: number,
+  ) {
     const { attemptedQuestions } = body;
     const score = await this.examService.submitExam({
       attemptedQuestions,
@@ -64,5 +63,29 @@ export class ExamController {
       user_id: req.cookies['user_id'],
     });
     return score;
+  }
+
+  @Get('getexamdetails/:exam_id')
+  async getExamDetails(@Param('exam_id') exam_id: number) {
+    const exam_details = await this.examService.getExamDetails({ exam_id });
+    return exam_details;
+  }
+
+  @Post('getselectedoption')
+  async getSelectedOption(@Body() body, @Req() req: Request) {
+    const { question_id, student_exam_id } = body;
+    const val = await this.examService.getSelectedOption({
+      question_id,
+      student_exam_id,
+      user_id: req.cookies['user_id'],
+    });
+    return val;
+  }
+
+  @Post('addquestion')
+  async addQuestion (@Body() body:{question_id:number, exam_id: number}) {
+    const {question_id, exam_id} = body;
+    const result= await this.examService.addQuestion( {question_id, exam_id} );
+    return result;
   }
 }

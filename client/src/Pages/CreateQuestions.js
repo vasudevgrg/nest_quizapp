@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import QuestionCard from '../Components/QuestionCard';
-import SelectCorrectOption from '../Components/SelectCorrectOption';
+import QuestionCard from '../Components/ExamPage/QuestionCard';
+import SelectCorrectOption from '../Components/Modal/SelectCorrectOption';
 
 const CreateQuestions = ({exam_id}) => {
     const [statement, setStatement]= useState("");
